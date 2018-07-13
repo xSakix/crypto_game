@@ -1,26 +1,31 @@
 import pandas as pd
 import numpy as np
 import os
-
+import matplotlib.pyplot as plt
 
 try:
     import msvcrt
+
     getch = msvcrt.getch
 except:
     import sys, tty, termios
+
+
     def _unix_getch():
         """Get a single character from stdin, Unix version"""
 
         fd = sys.stdin.fileno()
         old_settings = termios.tcgetattr(fd)
         try:
-            tty.setraw(sys.stdin.fileno())          # Raw read
+            tty.setraw(sys.stdin.fileno())  # Raw read
             ch = sys.stdin.read(1)
         finally:
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
         return ch
 
+
     getch = _unix_getch
+
 
 class CryptoGameAgent:
     def __init__(self, ticket, use_trader=False, invested=100000., model=None, agent=None, r_actions=np.empty(0)):
@@ -125,7 +130,7 @@ class CryptoGameAgent:
             # print('buying ', s, ' portfolio=', portfolio, 'cash=', self.cash,'shares=',self.shares)
 
     def get_action(self, i):
-        print('\rEnter action(0-Hold, 1-SELL,2-BUY): ',end='')
+        print('\rEnter action(0-Hold, 1-SELL,2-BUY): ', end='')
         return int(getch())
         # return int(input("Enter action(0-Hold, 1-SELL,2-BUY): "))
 
@@ -172,3 +177,9 @@ print('RESULT:')
 print('score:', agent.score)
 print('ror', agent.ror_history[-1])
 print('portfolio/invested = %f/%f' % (agent.history[-1], agent.invested))
+
+plt.plot(agent.ror_history)
+plt.plot(bench)
+plt.legend(['agent', 'b&h'])
+plt.title('Results!')
+plt.show()
